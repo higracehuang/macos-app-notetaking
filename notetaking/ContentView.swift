@@ -10,7 +10,7 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
@@ -20,15 +20,22 @@ struct ContentView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \NoteEntry.updatedAt, ascending: true)],
         animation: .default)
     private var noteEntries: FetchedResults<NoteEntry>
-
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+                ForEach(noteEntries) { noteEntry in
+                    if let title = noteEntry.title,
+                       let content = noteEntry.content,
+                       let updatedAt = noteEntry.updatedAt {
+                        NavigationLink {
+                            /// Display the note content
+                            Text(content)
+                        } label: {
+                            /// Display the title and update timestamp on the left pane
+                            Text(title)
+                            Text(updatedAt, formatter: itemFormatter)
+                        }
                     }
                 }
                 .onDelete(perform: deleteItems)
@@ -36,19 +43,19 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem {
                     Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                        Label("Add Note", systemImage: "plus")
                     }
                 }
             }
-            Text("Select an item")
+            Text("Select a note")
         }
     }
-
+    
     private func addItem() {
         withAnimation {
             let newItem = Item(context: viewContext)
             newItem.timestamp = Date()
-
+            
             do {
                 try viewContext.save()
             } catch {
@@ -59,11 +66,11 @@ struct ContentView: View {
             }
         }
     }
-
+    
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             offsets.map { items[$0] }.forEach(viewContext.delete)
-
+            
             do {
                 try viewContext.save()
             } catch {
