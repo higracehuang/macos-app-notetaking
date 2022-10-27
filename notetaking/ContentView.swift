@@ -20,16 +20,7 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(noteEntries) { noteEntry in
-                    if let title = noteEntry.title,
-                       let content = noteEntry.content,
-                       let updatedAt = noteEntry.updatedAt {
-                        NavigationLink {
-                            Text(content)
-                        } label: {
-                            Text(title)
-                            Text(updatedAt, formatter: itemFormatter)
-                        }
-                    }
+                    NoteEntryView(noteEntry: noteEntry)
                 }
             }
             .toolbar {
@@ -40,6 +31,23 @@ struct ContentView: View {
                 }
             }
             Text("Select a note")
+        }
+    }
+}
+
+struct NoteEntryView: View {
+    var noteEntry: NoteEntry
+    
+    var body: some View {
+        if let title = noteEntry.title,
+           let content = noteEntry.content,
+           let updatedAt = noteEntry.updatedAt {
+            NavigationLink {
+                Text(content)
+            } label: {
+                Text(title)
+                Text(updatedAt, formatter: itemFormatter)
+            }
         }
     }
 }
