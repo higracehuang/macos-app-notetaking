@@ -84,4 +84,15 @@ struct PersistenceController {
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
+    
+    func deleteNoteEntry(noteEntry: NoteEntry) {
+        let viewContext = container.viewContext
+        viewContext.delete(noteEntry)
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
 }

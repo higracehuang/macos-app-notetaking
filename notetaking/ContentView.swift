@@ -84,12 +84,12 @@ struct NoteEntryView: View {
                         } label: {
                             Image(systemName: "minus.circle")
                         }.buttonStyle(.plain)
-                        .confirmationDialog("Are you sure?",
-                                            isPresented: $shouldPresentConfirm) {
-                            Button("Delete this note", role: .destructive) {
-                                // call the delete function here
+                            .confirmationDialog("Are you sure?",
+                                                isPresented: $shouldPresentConfirm) {
+                                Button("Delete this note", role: .destructive) {
+                                    PersistenceController.shared.deleteNoteEntry(noteEntry: noteEntry)
+                                }
                             }
-                        }
                     }
                 }.onHover { isHover in
                     shouldShowDeleteButton = isHover
