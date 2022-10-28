@@ -41,7 +41,8 @@ struct NoteEntryView: View {
     @State private var titleInput: String = ""
     @State private var contentInput: String = ""
     
-    @State private var shouldShowDeleteButton = false
+    @State private var shouldShowDeleteButton: Bool = false
+    @State private var shouldPresentConfirm: Bool = false
     
     var body: some View {
         if let title = noteEntry.title,
@@ -77,12 +78,18 @@ struct NoteEntryView: View {
                     Text(title)
                     Text(updatedAt, formatter: itemFormatter)
                     Spacer()
-                    if shouldShowDeleteButton {
+                    if shouldShowDeleteButton || shouldPresentConfirm {
                         Button {
-                            // TODO: add button action here
+                            shouldPresentConfirm = true
                         } label: {
                             Image(systemName: "minus.circle")
                         }.buttonStyle(.plain)
+                        .confirmationDialog("Are you sure?",
+                                            isPresented: $shouldPresentConfirm) {
+                            Button("Delete this note", role: .destructive) {
+                                // call the delete function here
+                            }
+                        }
                     }
                 }.onHover { isHover in
                     shouldShowDeleteButton = isHover
