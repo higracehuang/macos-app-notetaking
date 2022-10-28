@@ -71,8 +71,17 @@ struct NoteEntryView: View {
                 }
                 
             } label: {
-                Text(title)
-                Text(updatedAt, formatter: itemFormatter)
+                HStack {
+                    Text(title)
+                    Text(updatedAt, formatter: itemFormatter)
+                    Spacer()
+                    Button {
+                        // TODO: add action here
+                    } label: {
+                        Image(systemName: "ellipsis")
+                    }.buttonStyle(.plain)
+                }
+                
             }
         }
     }
