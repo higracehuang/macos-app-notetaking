@@ -12,7 +12,7 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \NoteEntry.updatedAt, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \NoteEntry.createdAt, ascending: true)],
         animation: .default)
     private var noteEntries: FetchedResults<NoteEntry>
     
@@ -36,14 +36,40 @@ struct ContentView: View {
 }
 
 struct NoteEntryView: View {
-    var noteEntry: NoteEntry
+    @ObservedObject var noteEntry: NoteEntry
+    
+    @State private var titleInput: String = ""
+    @State private var contentInput: String = ""
     
     var body: some View {
         if let title = noteEntry.title,
-           let content = noteEntry.content,
-           let updatedAt = noteEntry.updatedAt {
+           let updatedAt = noteEntry.updatedAt,
+           let content = noteEntry.content {
             NavigationLink {
-                Text(content)
+                VStack {
+                    TextField("Title", text: $titleInput)
+                        .onAppear() {
+                            self.titleInput = title
+                        }
+                        .onChange(of: titleInput) { newTitle in
+                            PersistenceController.shared.updateNoteEntry(
+                                noteEntry: noteEntry,
+                                title: titleInput,
+                                content: newTitle)
+                        }
+                    
+                    TextEditor(text: $contentInput)
+                        .onAppear() {
+                            self.contentInput = content
+                        }
+                        .onChange(of: contentInput) { newContent in
+                            PersistenceController.shared.updateNoteEntry(
+                                noteEntry: noteEntry,
+                                title: titleInput,
+                                content: newContent)
+                        }
+                }
+                
             } label: {
                 Text(title)
                 Text(updatedAt, formatter: itemFormatter)
@@ -64,4 +90,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
-
