@@ -23,8 +23,6 @@ struct PersistenceController {
         do {
             try viewContext.save()
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
@@ -36,66 +34,47 @@ struct PersistenceController {
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "notetaking")
         if inMemory {
-            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            container.persistentStoreDescriptions.first!.url =
+            URL(fileURLWithPath: "/dev/null")
         }
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
     
-    func addNoteEntry() {
+    func save() {
         let viewContext = container.viewContext
-        let newNoteEntry = NoteEntry(context: viewContext)
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
+    func addNoteEntry() {
+        let newNoteEntry = NoteEntry(context: container.viewContext)
         newNoteEntry.createdAt = Date()
         newNoteEntry.updatedAt = Date()
         newNoteEntry.title = "Untitled"
         newNoteEntry.content = "TBD"
         
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-        
+        save()
     }
     
     func updateNoteEntry(noteEntry: NoteEntry, title:String, content: String) {
-        let viewContext = container.viewContext
         noteEntry.content = content
         noteEntry.title = title
         noteEntry.updatedAt = Date()
         
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        save()
     }
     
     func deleteNoteEntry(noteEntry: NoteEntry) {
-        let viewContext = container.viewContext
-        viewContext.delete(noteEntry)
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        container.viewContext.delete(noteEntry)
+        save()
     }
 }

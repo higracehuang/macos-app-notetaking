@@ -87,7 +87,8 @@ struct NoteEntryView: View {
                             .confirmationDialog("Are you sure?",
                                                 isPresented: $shouldPresentConfirm) {
                                 Button("Delete this note", role: .destructive) {
-                                    PersistenceController.shared.deleteNoteEntry(noteEntry: noteEntry)
+                                    PersistenceController.shared.deleteNoteEntry(
+                                        noteEntry: noteEntry)
                                 }
                             }
                     }
@@ -109,6 +110,8 @@ private let itemFormatter: DateFormatter = {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView().environment(
+            \.managedObjectContext,
+             PersistenceController.preview.container.viewContext)
     }
 }
