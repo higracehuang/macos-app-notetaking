@@ -84,9 +84,9 @@ struct NoteEntryView: View {
                         } label: {
                             Image(systemName: "minus.circle")
                         }.buttonStyle(.plain)
-                            .confirmationDialog("Are you sure?",
+                            .confirmationDialog("delete_question",
                                                 isPresented: $shouldPresentConfirm) {
-                                Button("Delete this note", role: .destructive) {
+                                Button("delete_confirm", role: .destructive) {
                                     PersistenceController.shared.deleteNoteEntry(
                                         noteEntry: noteEntry)
                                 }

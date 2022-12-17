@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  notetaking
+
+  Created by Le Huang on 11/19/22.
+  
+*/
+
+"delete_question" = "Are you sure?";
+"delete_confirm" = "Delete this note";

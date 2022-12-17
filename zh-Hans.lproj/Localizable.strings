@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  notetaking
+
+  Created by Le Huang on 11/19/22.
+  
+*/
+
+"delete_question" = "你确定要删除该条信息吗？";
+"delete_confirm" = "确定删除";
